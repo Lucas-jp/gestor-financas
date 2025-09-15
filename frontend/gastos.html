@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestão de Gastos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Gestão de Gastos</h2>
+    <form id="gastoForm">
+      <input type="number" step="0.01" id="valor" placeholder="Valor" required>
+      <input type="text" id="descricao" placeholder="Descrição" required>
+      <input type="date" id="data" required>
+      <button type="submit">Adicionar</button>
+    </form>
+
+    <h3>Lista de Gastos</h3>
+    <table id="gastosTable">
+      <thead>
+        <tr>
+          <th>Valor</th>
+          <th>Descrição</th>
+          <th>Data</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Total: R$ <span id="total">0.00</span></h3>
+    <button onclick="logout()">Sair</button>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
