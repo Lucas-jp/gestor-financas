@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestão de Investimentos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h3>Gestão Financeira</h3>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="gastos.html">💸 Gastos</a></li>
+            <li class="active"><a href="investimentos.html">📈 Investimentos</a></li> 
+            <li><a href="metas.html">🎯 Metas</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button onclick="logout()">Sair</button>
+        </div>
+    </nav>
+
+    <div class="content">
+
+        <div class="container">
+
+            <h2>Gestão de Investimentos</h2>
+            
+            <form id="investimentoForm">
+                
+                <select id="tipo" required>
+                    <option value="" disabled selected>Selecione o Tipo</option>
+                    <option value="Ações">Ações</option>
+                    <option value="Renda Fixa">Renda Fixa</option>
+                    <option value="Fundos Imobiliários (FII)">Fundos Imobiliários (FII)</option>
+                    <option value="Criptomoedas">Criptomoedas</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                
+                <input type="number" step="0.01" id="valor_aportado" placeholder="Valor Aportado" required>
+                <input type="text" id="descricao_investimento" placeholder="Descrição (ex: PETR4, Tesouro 2029)" required> 
+                <input type="date" id="data_aporte" required>
+                <button type="submit">Adicionar</button>
+            </form>
+
+            <h3>Lista de Investimentos</h3>
+            <table id="investimentosTable">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Valor Aportado</th>
+                        <th>Data do Aporte</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <h3>Total Aportado: R$ <span id="totalInvestido">0.00</span></h3>
+            
+        </div> </div> <script src="script.js"></script>
+</body>
+</html>
