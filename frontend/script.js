@@ -136,91 +136,91 @@ async function editarGasto(id, valor, descricao, categoria, data) {
 // ---------------- INVESTIMENTOS ---------------- //
 const investimentoForm = document.getElementById("investimentoForm");
 if (investimentoForm) {
-  investimentoForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    const tipo = document.getElementById("tipo").value;
-    const valor_aportado = document.getElementById("valor_aportado").value;
-    const descricao = document.getElementById("descricao").value;
-    const data_aporte = document.getElementById("data_aporte").value;
+    investimentoForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const tipo = document.getElementById("tipo").value;
+        const valor_aportado = document.getElementById("valor_aportado").value;
+        const descricaoInvestimento = document.getElementById("descricao_investimento").value;
+        const data_aporte = document.getElementById("data_aporte").value;
 
-    const res = await fetch(`${apiUrl}/investimentos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        tipo, 
-        valor_aportado, 
-        descricao, 
-        data_aporte, 
-        usuario_id: usuarioId 
-      }),
+        const res = await fetch(`${apiUrl}/investimentos`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                tipo, 
+                valor_aportado,
+                descricao: descricaoInvestimento, 
+                data_aporte, 
+                usuario_id: usuarioId 
+            }),
+        });
+
+        if (res.ok) {
+            loadInvestimentos();
+            investimentoForm.reset();
+        } else {
+            alert("Erro ao adicionar investimento");
+        }
     });
-
-    if (res.ok) {
-      loadInvestimentos();
-      investimentoForm.reset();
-    } else {
-      alert("Erro ao adicionar investimento");
-    }
-  });
 }
 
 async function loadInvestimentos() {
-  if (!usuarioId) {
-    window.location.href = "index.html";
-    return;
-  }
+    if (!usuarioId) {
+        window.location.href = "index.html";
+        return;
+    }
 
-  const res = await fetch(`${apiUrl}/investimentos/${usuarioId}`);
-  const data = await res.json();
-  const tbody = document.querySelector("#investimentosTable tbody");
-  tbody.innerHTML = "";
+    const res = await fetch(`${apiUrl}/investimentos/${usuarioId}`);
+    const data = await res.json();
+    const tbody = document.querySelector("#investimentosTable tbody");
+    tbody.innerHTML = "";
 
-  let total = 0;
-  data.forEach((investimento) => {
-    total += parseFloat(investimento.valor_aportado);
+    let total = 0;
+    data.forEach((investimento) => {
+        total += parseFloat(investimento.valor_aportado);
 
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${investimento.tipo}</td>
-      <td>${investimento.descricao}</td>
-      <td>R$ ${parseFloat(investimento.valor_aportado).toFixed(2)}</td>
-      <td>${investimento.data_aporte}</td>
-      <td>
-        <button onclick="editarInvestimento(${investimento.id}, '${investimento.tipo}', '${investimento.valor_aportado}', '${investimento.descricao}', '${investimento.data_aporte}')">Editar</button>
-        <button onclick="deletarInvestimento(${investimento.id})">Deletar</button>
-      </td>
-    `;
-    tbody.appendChild(row);
-  });
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${investimento.tipo}</td>
+            <td>${investimento.descricao}</td>
+            <td>R$ ${parseFloat(investimento.valor_aportado).toFixed(2)}</td>
+            <td>${investimento.data_aporte}</td>
+            <td>
+                <button onclick="editarInvestimento(${investimento.id}, '${investimento.tipo}', '${investimento.valor_aportado}', '${investimento.descricao}', '${investimento.data_aporte}')">Editar</button>
+                <button onclick="deletarInvestimento(${investimento.id})">Deletar</button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
 
-  document.getElementById("totalInvestido").textContent = total.toFixed(2);
+    document.getElementById("totalInvestido").textContent = total.toFixed(2);
 }
 
 async function deletarInvestimento(id) {
-  await fetch(`${apiUrl}/investimentos/${id}`, { method: "DELETE" });
-  loadInvestimentos();
+    await fetch(`${apiUrl}/investimentos/${id}`, { method: "DELETE" });
+    loadInvestimentos();
 }
 
 async function editarInvestimento(id, tipo, valor_aportado, descricao, data_aporte) {
-  const novoTipo = prompt("Novo tipo:", tipo);
-  const novoValorAportado = prompt("Novo valor aportado:", valor_aportado);
-  const novaDescricao = prompt("Nova descrição:", descricao);
-  const novaDataAporte = prompt("Nova data (YYYY-MM-DD):", data_aporte);
+    const novoTipo = prompt("Novo tipo:", tipo);
+    const novoValorAportado = prompt("Novo valor aportado:", valor_aportado);
+    const novaDescricao = prompt("Nova descrição:", descricao);
+    const novaDataAporte = prompt("Nova data (YYYY-MM-DD):", data_aporte);
 
-  if (novoTipo && novoValorAportado && novaDescricao && novaDataAporte) { 
-    await fetch(`${apiUrl}/investimentos/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        tipo: novoTipo,
-        valor_aportado: novoValorAportado,
-        descricao: novaDescricao,
-        data_aporte: novaDataAporte,
-      }),
-    });
-    loadInvestimentos();
-  }
+    if (novoTipo && novoValorAportado && novaDescricao && novaDataAporte) { 
+        await fetch(`${apiUrl}/investimentos/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                tipo: novoTipo,
+                valor_aportado: novoValorAportado,
+                descricao: novaDescricao,
+                data_aporte: novaDataAporte,
+            }),
+        });
+        loadInvestimentos();
+    }
 }
 
 // ---------------- METAS FINANCEIRAS ---------------- //
