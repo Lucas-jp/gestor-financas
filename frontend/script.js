@@ -4,25 +4,25 @@ let usuarioId = localStorage.getItem("usuario_id");
 // -------- LOGIN --------
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
 
-    const res = await fetch(`${apiUrl}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, senha }),
-    });
+    const res = await fetch(`${apiUrl}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, senha }),
+    });
 
-    const data = await res.json();
-    if (res.ok) {
-      localStorage.setItem("usuario_id", data.usuario_id);
-      window.location.href = "gastos.html";
-    } else {
-      alert(data.error);
-    }
-  });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem("usuario_id", data.usuario_id);
+      window.location.href = "dashboard.html"; 
+    } else {
+      alert(data.error);
+    }
+  });
 }
 
 // -------- CADASTRO --------
@@ -310,27 +310,122 @@ async function editarMeta(id, nome_meta, valor_objetivo, data_limite) {
   }
 }
 
+// -------- DASHBOARD / RESUMO --------
 
+async function loadDashboard() {
+    if (!usuarioId) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    let dataGastos = [];
+    try {
+        const resGastos = await fetch(`${apiUrl}/gastos/${usuarioId}`);
+        dataGastos = await resGastos.json();
+    } catch (e) {
+        console.error("Erro ao carregar Gastos: A API pode estar indisponível ou retornou JSON inválido.", e);
+    }
+    
+    let totalGastosMes = 0;
+    
+    const mesAnoAtual = new Date().toISOString().substring(0, 7); 
+    
+    const gastosPorCategoria = {}; 
+    
+    dataGastos.forEach(gasto => {
+        const dataDoGasto = new Date(gasto.data);
+        const mesAnoGasto = dataDoGasto.toISOString().substring(0, 7);
+
+        if (mesAnoGasto === mesAnoAtual) { 
+            const valor = parseFloat(gasto.valor);
+            totalGastosMes += valor;
+            
+            if (gastosPorCategoria[gasto.categoria]) {
+                gastosPorCategoria[gasto.categoria] += valor;
+            } else {
+                gastosPorCategoria[gasto.categoria] = valor;
+            }
+        }
+    });
+
+
+    let dataInvest = [];
+    try {
+        const resInvest = await fetch(`${apiUrl}/investimentos/${usuarioId}`);
+        dataInvest = await resInvest.json();
+    } catch (e) {
+        console.error("Erro ao carregar Investimentos.");
+    }
+
+    let totalAportado = 0;
+    dataInvest.forEach(invest => {
+        totalAportado += parseFloat(invest.valor_aportado);
+    });
+
+    try {
+        const resMetas = await fetch(`${apiUrl}/metas/${usuarioId}`);
+        await resMetas.json(); 
+    } catch (e) {
+        console.error("Erro ao carregar Metas.");
+    }
+    let progressoMedio = 0;
+    
+    document.getElementById("totalGastosMes").textContent = `R$ ${totalGastosMes.toFixed(2)}`;
+    document.getElementById("totalAportado").textContent = `R$ ${totalAportado.toFixed(2)}`;
+    document.getElementById("progressoMetas").textContent = `${progressoMedio.toFixed(0)}%`;
+    
+
+    
+    if (totalGastosMes > 0) {
+        drawChart();
+        
+        function drawChart() {
+            const dadosGrafico = [['Categoria', 'Valor Total']];
+            for (const categoria in gastosPorCategoria) {
+                dadosGrafico.push([categoria, gastosPorCategoria[categoria]]);
+            }
+
+            const data = google.visualization.arrayToDataTable(dadosGrafico);
+
+            const options = {
+                title: 'Distribuição de Gastos do Mês',
+                is3D: true,
+                chartArea: { left: 10, top: 30, width: '95%', height: '85%' }
+            };
+
+            const chart = new google.visualization.PieChart(document.getElementById('graficoCategorias'));
+            chart.draw(data, options);
+        }
+    } else {
+         document.getElementById('graficoCategorias').innerHTML = '<p style="text-align: center; color: #666;">Nenhum gasto registrado neste mês.</p>';
+    }
+}
 
 // ---------------- INICIALIZAÇÃO E LOGOUT ---------------- //
 
-
 function logout() {
-  localStorage.removeItem("usuario_id");
-  window.location.href = "index.html";
+    localStorage.removeItem("usuario_id");
+    window.location.href = "index.html";
 }
 
-// carregar gastos ao abrir gastos.html
+
+if (document.querySelector(".summary-cards")) {
+
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(loadDashboard);
+}
+
+
 if (document.querySelector("#gastosTable")) {
-  loadGastos();
+    loadGastos();
 }
 
-// carregar investimentos ao abrir investimentos.html
+
 if (document.querySelector("#investimentosTable")) {
-  loadInvestimentos();
+    loadInvestimentos();
 }
 
-// carregar metas ao abrir metas.html
+
 if (document.querySelector("#metasTable")) {
-  loadMetas();
+    loadMetas();
 }
