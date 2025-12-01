@@ -234,3 +234,44 @@ td button {
     
     width: calc(100% - 250px); 
 }
+/* --- Estilos para o Dashboard --- */
+
+.summary-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 1; 
+    text-align: center;
+}
+
+.card h4 {
+    margin-top: 0;
+    font-size: 1em;
+    color: #666;
+}
+
+.card p {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin: 10px 0 0;
+}
+
+.total-gastos p {
+    color: #ef4444; 
+}
+
+.total-investimentos p {
+    color: #16a34a; 
+}
+
+.progresso-metas p {
+    color: #4f46e5;
+}
