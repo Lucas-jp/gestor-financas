@@ -1,1 +1,59 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Gestão Financeira</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h3>Gestão Financeira</h3>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="active"><a href="dashboard.html">🏠 Dashboard</a></li> 
+            <li><a href="gastos.html">💸 Gastos</a></li>
+            <li><a href="investimentos.html">📈 Investimentos</a></li>
+            <li><a href="metas.html">🎯 Metas</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button onclick="logout()">Sair</button>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="container">
+            <h2>Resumo Financeiro Mensal</h2>
+            
+            <div class="summary-cards">
+                <div class="card total-gastos">
+                    <h4>Total de Gastos (Mês)</h4>
+                    <p id="totalGastosMes">R$ 0.00</p>
+                </div>
+                <div class="card total-investimentos">
+                    <h4>Total Investido</h4>
+                    <p id="totalAportado">R$ 0.00</p>
+                </div>
+                <div class="card progresso-metas">
+                    <h4>Progresso Médio das Metas</h4>
+                    <p id="progressoMetas">0%</p>
+                </div>
+            </div>
+
+            <hr>
+            
+            <h3>Visão Geral por Categoria</h3>
+            <div id="graficoCategorias" style="min-height: 300px;">
+                <p>Carregando dados...</p>
+            </div>
+            
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
